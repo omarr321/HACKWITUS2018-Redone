@@ -195,7 +195,7 @@ public class Fight {
 			Tools.clearScreen();
 			switch(action) {
 			case "1":
-				if (player.getHealth() > 0) {
+				if (player.getHealthPotion() > 0) {
 					Tools.slowText("You heal 25 HP!");
 					player.addHealth(25);
 					if (player.getHealth() > 100) {
@@ -203,7 +203,7 @@ public class Fight {
 					}
 					isGood = true;
 					IsGood = true;
-					player.subHealth(1);;
+					player.subHealthPotion(1);;
 				} else {
 					Tools.slowText("You have none left.");
 				}
