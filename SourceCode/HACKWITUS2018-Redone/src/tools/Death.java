@@ -1,11 +1,10 @@
 package tools;
 
 import java.util.Scanner;
-
 import control.Controller;
 
 public class Death {
-	public static void death(int[] playerData, boolean[] isDone, String[] name, int[] safeCombo, Scanner input) {
+	public static void death(Player player, Scanner input) {
 		String[] args = {""};
 		boolean isGood = false;
 		String action;
@@ -28,7 +27,7 @@ public class Death {
 			action = action.toLowerCase();
 			switch (action) {
 			case "1":
-				SaveLoad.load(playerData, isDone, name, safeCombo, input);
+				player.load(input);
 			case "2":
 				Controller.main(args);;
 			case "3":

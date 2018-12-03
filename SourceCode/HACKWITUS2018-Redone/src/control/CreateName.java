@@ -2,9 +2,10 @@ package control;
 
 import java.util.Scanner;
 import tools.Tools;
+import tools.Player;
 
 public class CreateName {
-	public static void start(String[] name, Scanner input) {
+	public static void start(Player player, Scanner input) {
 		Tools.clearScreen();
 		String temp = "Error: Name was not found", username = "", change = "";
 		boolean goodName = false;
@@ -168,8 +169,6 @@ public class CreateName {
 			}
 		}
 		
-		name[0] = username;
-		username = username.replace(' ', '_');
-		name[3] = username;
+		player.setName(username);
 	}
 }
