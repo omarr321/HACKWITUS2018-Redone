@@ -55,7 +55,7 @@ public class Fight {
 		IsFake = isFake;
 	}
 	
-	public boolean run(int[] playerData, Scanner input, String[] name) {
+	public boolean run(Player player, Scanner input) {
 		didDefend = false;
 		
 		while (true) {
@@ -64,7 +64,7 @@ public class Fight {
 			
 			Tools.clearScreen();
 			String outputEnm = String.format("Name: %s%nDescription: %s%nHealth: %d/%d%n", Name, Description, Health, MaxHealth);
-			String outputPlayer = String.format("Name: %s%nHealth: %d/100%n", name[0], playerData[0]);
+			String outputPlayer = String.format("Name: %s%nHealth: %d/100%n", player.getName(), player.getHealth());
 			String action;
 
 			Tools.slowText(outputEnm);
@@ -87,7 +87,7 @@ public class Fight {
 				
 				switch (action) {
 				case "1":
-					Attack(playerData, false);
+					Attack(player, false);
 					IsGood = true;
 					break;
 				case "2":
@@ -96,7 +96,7 @@ public class Fight {
 					didDefendPlayer = true;
 					break;
 				case "3":
-					usePotion(playerData, input);
+					usePotion(player, input);
 					break;
 				case "end":
 					System.exit(0);
@@ -117,12 +117,12 @@ public class Fight {
 			int rand = Tools.random(0, 100);
 			
 			if (rand > 25) {
-				AttackEn(playerData);
+				AttackEn(player);
 			} else {
 				DefendEn();
 			}
 			
-			if (playerData[0] <= 0) {
+			if (player.getHealth() <= 0) {
 				if (IsFake == true) {
 					return false;
 				} else {
@@ -132,9 +132,10 @@ public class Fight {
 		}
 	}
 
-	private void Attack(int[] playerData, boolean potion) {
+	private void Attack(Player player, boolean potion) {
 		int damD = Tools.random(5, 20);
-		int damW = Tools.random(playerData[4], playerData[5]);
+		int damW = Tools.random(player.getSwordMin(), player.getSwordMax());
+		
 		int total;
 		Tools.slowText("You do " + damD + " damage!");
 		System.out.println();
@@ -175,16 +176,16 @@ public class Fight {
 		}
 	}
 	
-	private void usePotion(int[] playerData, Scanner input) {
+	private void usePotion(Player player, Scanner input) {
 		boolean isGood = false;
 		String action;
 		
 		while(isGood == false) {
 			System.out.println();
 			Tools.slowText("What potion do you want to use?");
-			Tools.slowText("1: Health potion (you have " + playerData[1] + ")");
-			Tools.slowText("2: Attack potion (you have " + playerData[2] + ")");
-			Tools.slowText("3: Defend potion (you have " + playerData[3] + ")");
+			Tools.slowText("1: Health potion (you have " + player.getHealthPotion() + ")");
+			Tools.slowText("2: Attack potion (you have " + player.getAttackPotion() + ")");
+			Tools.slowText("3: Defend potion (you have " + player.getDefendPotion() + ")");
 			Tools.slowText("4: Back");
 			System.out.println();
 			Tools.slowTextN(">");
@@ -194,36 +195,36 @@ public class Fight {
 			Tools.clearScreen();
 			switch(action) {
 			case "1":
-				if (playerData[1] > 0) {
+				if (player.getHealth() > 0) {
 					Tools.slowText("You heal 25 HP!");
-					playerData[0] = playerData[0] + 25;
-					if (playerData[0] > 100) {
-						playerData[0] = 100;
+					player.addHealth(25);
+					if (player.getHealth() > 100) {
+						player.setHealth(100);
 					}
 					isGood = true;
 					IsGood = true;
-					playerData[1]--;
+					player.subHealth(1);;
 				} else {
 					Tools.slowText("You have none left.");
 				}
 				break;
 			case "2":
-				if (playerData[2] > 0) {
-					Attack(playerData, true);
+				if (player.getAttackPotion() > 0) {
+					Attack(player, true);
 					isGood = true;
 					IsGood = true;
-					playerData[2]--;
+					player.subAttackPotion(1);;
 				} else {
 					Tools.slowText("You have none left.");
 				}
 				break;
 			case "3":
-				if (playerData[3] > 0) {
+				if (player.getDefendPotion() > 0) {
 					Defend(true);
 					isGood = true;
 					IsGood = true;
 					didDefendPlayer = true;
-					playerData[3]--;
+					player.subDefendPotion(1);;
 				} else {
 					Tools.slowText("You have none left.");
 				}
@@ -239,9 +240,9 @@ public class Fight {
 		}
 	}
 	
-	private void AttackEn(int[] playerData) {
+	private void AttackEn(Player player) {
 		int dam = Tools.random(MinDam, MaxDam);
-		int blocked = Tools.random(playerData[6], playerData[8]);
+		int blocked = Tools.random(player.getArmorMin(), player.getArmorMax());
 		if (didDefendPlayer == true) {
 			Tools.slowText("They attack you but you were ready for the attack.");
 			dam = dam - dam / 2;
@@ -259,7 +260,7 @@ public class Fight {
 		}
 		System.out.println();
 		Tools.slowText("You take " + dam + " damage.");
-		playerData[0] = playerData[0] - dam;
+		player.subHealth(dam);;
 		
 		Tools.sleep(2);
 	}
